@@ -3,8 +3,8 @@
 namespace KaanTanis\FilamentSimpleWebp\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use KaanTanis\FilamentSimpleWebp\FilamentSimpleWebpServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {

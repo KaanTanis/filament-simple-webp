@@ -2,10 +2,7 @@
 
 namespace KaanTanis\FilamentSimpleWebp;
 
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
-use Intervention\Image\ImageManagerStatic;
-use League\Flysystem\UnableToCheckFileExistence;
 
 class FilamentSimpleWebp
 {
@@ -34,7 +31,7 @@ class FilamentSimpleWebp
 
         $image->save($file->path(), $optimize, 'webp');
 
-        $filename = $image->filename . '.webp';
+        $filename = $image->filename.'.webp';
 
         $file->{$storeMethod}($component->getDirectory(), $filename, $component->getDiskName());
 

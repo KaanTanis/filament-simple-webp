@@ -4,10 +4,10 @@ namespace KaanTanis\FilamentSimpleWebp;
 
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
+use KaanTanis\FilamentSimpleWebp\Commands\FilamentSimpleWebpCommand;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use KaanTanis\FilamentSimpleWebp\Commands\FilamentSimpleWebpCommand;
 
 class FilamentSimpleWebpServiceProvider extends PackageServiceProvider
 {
@@ -31,8 +31,7 @@ class FilamentSimpleWebpServiceProvider extends PackageServiceProvider
         Field::macro('webp', function ($maxWdith = 1920, $optimize = 70) {
             return $this
                 ->saveUploadedFileUsing(
-                    fn(FileUpload $component, TemporaryUploadedFile $file)
-                        => FilamentSimpleWebp::webp($component, $file, $maxWdith, $optimize)
+                    fn (FileUpload $component, TemporaryUploadedFile $file) => FilamentSimpleWebp::webp($component, $file, $maxWdith, $optimize)
                 );
         });
     }
