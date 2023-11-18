@@ -26,7 +26,7 @@ class FilamentSimpleWebpServiceProvider extends PackageServiceProvider
             ->hasCommand(FilamentSimpleWebpCommand::class);
     }
 
-    public function boot()
+    public function boot(): void
     {
         Field::macro('webp', function ($maxWdith = 1920, $optimize = 70) {
             return $this
