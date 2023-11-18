@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace KaanTanis\FilamentSimpleWebp\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentSimpleWebpCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-simple-webp';
 
     public $description = 'My command';
 
