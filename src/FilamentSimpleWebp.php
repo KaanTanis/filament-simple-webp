@@ -17,7 +17,6 @@ class FilamentSimpleWebp
 
         $manager = new ImageManager(['driver' => 'gd']);
 
-
         // @fixme this is a workaround for the issue that the file is not uploaded yet
         try {
             if (! $file->exists()) {
@@ -42,7 +41,7 @@ class FilamentSimpleWebp
 
         $image->save($file->path(), $optimize, 'webp');
 
-        $filename = config('filament-simple-webp.prefix') . $image->filename.'.webp';
+        $filename = config('filament-simple-webp.prefix').$image->filename.'.webp';
 
         $file->{$storeMethod}($component->getDirectory(), $filename, $component->getDiskName());
 
