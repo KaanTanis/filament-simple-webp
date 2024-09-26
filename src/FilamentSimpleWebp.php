@@ -2,9 +2,9 @@
 
 namespace KaanTanis\FilamentSimpleWebp;
 
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use League\Flysystem\UnableToCheckFileExistence;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class FilamentSimpleWebp
 {
@@ -13,9 +13,6 @@ class FilamentSimpleWebp
      *
      * @param  object  $component
      * @param  object  $file
-     * @param  int     $maxWidth
-     * @param  int     $optimize
-     * @return string|null
      */
     public static function convertToWebp($component, $file, int $maxWidth, int $optimize): ?string
     {
@@ -23,11 +20,11 @@ class FilamentSimpleWebp
             return null;
         }
 
-        $imageManager = new ImageManager(new Driver());
+        $imageManager = new ImageManager(new Driver);
         $image = $imageManager->read($file->path());
 
         self::resizeImage($image, $maxWidth);
-        self::setOptimizationLevel( $file->extension(), $optimize);
+        self::setOptimizationLevel($file->extension(), $optimize);
 
         $webpFileName = self::generateWebpFileName($file);
         $image->save($file->path(), $optimize, 'webp');
@@ -39,7 +36,6 @@ class FilamentSimpleWebp
      * Checks if the file exists.
      *
      * @param  object  $file
-     * @return bool
      */
     private static function isFileUploaded($file): bool
     {
@@ -54,19 +50,12 @@ class FilamentSimpleWebp
      * Resizes the image if it exceeds the max width.
      *
      * @param  object  $image
-     * @param  int     $maxWidth
-     * @return void
      */
     private static function resizeImage($image, int $maxWidth): void
     {
         $image->scaleDown(width: $maxWidth);
     }
 
-    /**
-     * @param  string  $fileType
-     * @param  int     &$optimize
-     * @return void
-     */
     private static function setOptimizationLevel(string $fileType, int &$optimize): void
     {
         if ($fileType === 'webp') {
@@ -78,11 +67,10 @@ class FilamentSimpleWebp
      * Generates a filename for the webp image.
      *
      * @param  object  $file
-     * @return string
      */
     private static function generateWebpFileName($file): string
     {
-        return config('filament-simple-webp.prefix') . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
+        return config('filament-simple-webp.prefix').pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'.webp';
     }
 
     /**
@@ -90,8 +78,6 @@ class FilamentSimpleWebp
      *
      * @param  object  $component
      * @param  object  $file
-     * @param  string  $fileName
-     * @return string
      */
     private static function storeImage($component, $file, string $fileName): string
     {
