@@ -31,7 +31,7 @@ class FilamentSimpleWebpServiceProvider extends PackageServiceProvider
         Field::macro('webp', function ($maxWdith = 1920, $optimize = 70) {
             return $this
                 ->saveUploadedFileUsing(
-                    fn (FileUpload $component, TemporaryUploadedFile $file) => FilamentSimpleWebp::webp($component, $file, $maxWdith, $optimize)
+                    fn (FileUpload $component, TemporaryUploadedFile $file) => FilamentSimpleWebp::convertToWebp($component, $file, $maxWdith, $optimize)
                 );
         });
     }

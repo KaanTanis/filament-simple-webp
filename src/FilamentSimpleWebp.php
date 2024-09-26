@@ -4,47 +4,100 @@ namespace KaanTanis\FilamentSimpleWebp;
 
 use Intervention\Image\ImageManager;
 use League\Flysystem\UnableToCheckFileExistence;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class FilamentSimpleWebp
 {
-    public static function webp($component, $file, $maxWidth, $optimize)
+    /**
+     * Converts the given image to webp format, resizes if necessary, and stores it.
+     *
+     * @param  object  $component
+     * @param  object  $file
+     * @param  int     $maxWidth
+     * @param  int     $optimize
+     * @return string|null
+     */
+    public static function convertToWebp($component, $file, int $maxWidth, int $optimize): ?string
     {
-        $fileType = $file->extension();
-
-        $storeMethod = $component->getVisibility() === 'public'
-            ? 'storePubliclyAs'
-            : 'storeAs';
-
-        $manager = new ImageManager(['driver' => 'gd']);
-
-        // @fixme this is a workaround for the issue that the file is not uploaded yet
-        try {
-            if (! $file->exists()) {
-                return null;
-            }
-        } catch (UnableToCheckFileExistence $exception) {
+        if (! self::isFileUploaded($file)) {
             return null;
         }
 
-        $image = $manager->make($file->path());
+        $imageManager = new ImageManager(new Driver());
+        $image = $imageManager->read($file->path());
 
-        // resize
-        if ($image->width() > $maxWidth) {
-            $image->resize($maxWidth, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-        }
+        self::resizeImage($image, $maxWidth);
+        self::setOptimizationLevel( $file->extension(), $optimize);
 
-        if ($fileType === 'webp') {
-            $optimize = 90; // if already webp, optimize more but not too much
-        }
-
+        $webpFileName = self::generateWebpFileName($file);
         $image->save($file->path(), $optimize, 'webp');
 
-        $filename = config('filament-simple-webp.prefix').$image->filename.'.webp';
+        return self::storeImage($component, $file, $webpFileName);
+    }
 
-        $file->{$storeMethod}($component->getDirectory(), $filename, $component->getDiskName());
+    /**
+     * Checks if the file exists.
+     *
+     * @param  object  $file
+     * @return bool
+     */
+    private static function isFileUploaded($file): bool
+    {
+        try {
+            return $file->exists();
+        } catch (UnableToCheckFileExistence $exception) {
+            return false;
+        }
+    }
 
-        return $filename;
+    /**
+     * Resizes the image if it exceeds the max width.
+     *
+     * @param  object  $image
+     * @param  int     $maxWidth
+     * @return void
+     */
+    private static function resizeImage($image, int $maxWidth): void
+    {
+        $image->scaleDown(width: $maxWidth);
+    }
+
+    /**
+     * @param  string  $fileType
+     * @param  int     &$optimize
+     * @return void
+     */
+    private static function setOptimizationLevel(string $fileType, int &$optimize): void
+    {
+        if ($fileType === 'webp') {
+            $optimize = 100;
+        }
+    }
+
+    /**
+     * Generates a filename for the webp image.
+     *
+     * @param  object  $file
+     * @return string
+     */
+    private static function generateWebpFileName($file): string
+    {
+        return config('filament-simple-webp.prefix') . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
+    }
+
+    /**
+     * Stores the image on the designated disk and directory.
+     *
+     * @param  object  $component
+     * @param  object  $file
+     * @param  string  $fileName
+     * @return string
+     */
+    private static function storeImage($component, $file, string $fileName): string
+    {
+        $storeMethod = $component->getVisibility() === 'public' ? 'storePubliclyAs' : 'storeAs';
+        $file->{$storeMethod}($component->getDirectory(), $fileName, $component->getDiskName());
+
+        return $fileName;
     }
 }
