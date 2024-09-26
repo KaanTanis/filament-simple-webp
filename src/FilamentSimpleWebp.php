@@ -70,7 +70,9 @@ class FilamentSimpleWebp
      */
     private static function generateWebpFileName($file): string
     {
-        return config('filament-simple-webp.prefix').pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'.webp';
+        $rand = uniqid();
+
+        return config('filament-simple-webp.prefix').$rand.'.webp';
     }
 
     /**
